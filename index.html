@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>新概念英语2 学习计划</title>
+    <title>新概念2 动态学习计划</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -14,66 +14,131 @@
             text-align: center;
             font-size: 3em;
             color: #333;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
-        table {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            border-collapse: collapse;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        .tabs {
+            text-align: center;
+            margin-bottom: 20px;
         }
-        th, td {
-            border: 1px solid #eaeaea;
-            padding: 12px 15px;
-            text-align: left;
-            line-height: 1.5;
-        }
-        th {
-            background-color: #4CAF50;
-            color: white;
+        .tab-btn {
+            padding: 10px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border: none;
+            background-color: #ddd;
+            margin: 0 10px;
+            border-radius: 5px;
             font-weight: bold;
-            position: sticky;
-            top: 0;
+            transition: 0.3s;
         }
-        /* 状态样式控制 */
-        .past td {
-            color: #2e8b57; /* 绿色：已完成 */
+        .tab-btn.active { background-color: #4CAF50; color: white; }
+        
+        /* TODAY 页面样式 */
+        #today-view {
+            max-width: 650px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-size: 1.2em;
+            line-height: 2;
         }
-        .today td {
-            color: #ff8c00; /* 橙色：当天 */
-            font-weight: bold; /* 加粗 */
-            background-color: #fff8eb; /* 给今天加一点极淡的背景色突出显示 */
+        .today-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
-        .future td {
-            color: #b0b0b0; /* 浅灰色：待进行 */
+        .today-date { color: black; font-weight: bold; font-size: 1.5em; }
+        
+        #btn-skip {
+            background-color: #ff4757; color: white; border: none; padding: 8px 15px;
+            border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
         }
-        /* 为了让表格看起来更整洁，列宽稍微控制一下 */
-        td:nth-child(1) { width: 120px; text-align: center; font-family: monospace; font-size: 1.1em;}
-        td:nth-child(2) { width: 300px; }
+        #btn-skip:hover { background-color: #ff6b81; }
+        
+        .row-item {
+            margin-bottom: 15px; display: flex; align-items: center;
+            padding: 8px; border-radius: 8px; transition: 0.2s;
+        }
+        .row-item:hover { background-color: #f5f5f5; }
+        
+        .label { width: 80px; color: #666; font-size: 0.9em; }
+        .lesson-text { flex: 1; font-weight: bold; transition: 0.3s; }
+        
+        .type-new { color: red; }
+        .type-rev { color: orange; }
+        
+        /* 状态样式：延迟状态改为下划线 */
+        .status-done { color: green !important; }
+        .status-delayed { text-decoration: underline !important; color: #aaa !important; }
+        
+        /* 动作按钮 */
+        .action-btns { display: flex; gap: 8px; margin-left: 10px; }
+        .btn-act {
+            padding: 5px 15px; border: 1px solid #ddd; background: white;
+            border-radius: 5px; cursor: pointer; color: #666; font-size: 0.85em; font-weight: bold; transition: 0.2s;
+        }
+        .btn-act:hover { background: #eee; }
+        .btn-act.active-done { background: #4CAF50; color: white; border-color: #4CAF50; }
+        .btn-act.active-delay { background: #ff4757; color: white; border-color: #ff4757; }
+
+        /* TODO 页面样式 */
+        #todo-view { display: none; max-width: 1000px; margin: 0 auto; }
+        table { width: 100%; border-collapse: collapse; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #eaeaea; padding: 12px; text-align: left; }
+        th { background-color: #4CAF50; color: white; position: sticky; top: 0; z-index: 10; }
+        
+        .tbl-past td { color: #2e8b57; } 
+        .tbl-today td { color: #ff8c00; font-weight: bold; background-color: #fff8eb; }
+        .tbl-future td { color: #b0b0b0; }
+        
+        .skipped-msg { text-align: center; color: #ff4757; padding: 30px 0; font-weight: bold; font-size: 1.2em; }
+        .btn-resume {
+            margin-top: 20px; background-color: #4CAF50; color: white; border: none;
+            padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 1em; font-weight: bold;
+        }
+        .btn-resume:hover { background-color: #45a049; }
     </style>
 </head>
 <body>
 
     <h1>just do it.</h1>
+    
+    <div class="tabs">
+        <button id="btn-today" class="tab-btn active" onclick="switchTab('today')">TODAY</button>
+        <button id="btn-todo" class="tab-btn" onclick="switchTab('todo')">TODO</button>
+    </div>
 
-    <table id="planTable">
-        <thead>
-            <tr>
-                <th>日期</th>
-                <th>学习</th>
-                <th>复习</th>
-            </tr>
-        </thead>
-        <tbody id="planBody">
-            </tbody>
-    </table>
+    <div id="today-view">
+        <div class="today-header">
+            <div class="today-date" id="display-date"></div>
+            <button id="btn-skip" onclick="skipToday()">Not Today</button>
+        </div>
+        <div id="today-content">
+            </div>
+    </div>
+
+    <div id="todo-view">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:120px;text-align:center;">日期</th>
+                    <th style="width:250px;">学习</th>
+                    <th>复习</th>
+                </tr>
+            </thead>
+            <tbody id="todo-body">
+                </tbody>
+        </table>
+    </div>
 
     <script>
-        // 新概念2全96课标题数据
         const titles = [
             "", "L1. A private conversation", "L2. Breakfast or lunch?", "L3. Please send me a card", "L4. An exciting trip", "L5. No wrong numbers", "L6. Percy Buttons", "L7. Too late", "L8. The best and the worst", "L9. A cold welcome", "L10. Not for jazz",
             "L11. One good turn deserves another", "L12. Goodbye and good luck", "L13. The Greenwood Boys", "L14. Do you speak English?", "L15. Good news", "L16. A polite request", "L17. Always young", "L18. He often does this!", "L19. Sold out", "L20. One man in a boat",
@@ -86,72 +151,438 @@
             "L81. Escape", "L82. Monster or fish?", "L83. After the elections", "L84. On strike", "L85. Never too old to learn", "L86. Out of control", "L87. A perfect alibi", "L88. Trapped in a mine", "L89. A slip of the tongue", "L90. What's for supper?",
             "L91. Three men in a basket", "L92. Asking for trouble", "L93. A noble gift", "L94. Future champions", "L95. A fantasy", "L96. The dead return."
         ];
-
-        const tbody = document.getElementById('planBody');
-        
-        // 设定计划开始日期为 2026年3月12日 (JavaScript中月份从0开始，2代表3月)
-        const startDate = new Date(2026, 2, 12);
-        
-        // 获取系统当前日期，并重置时间为0点，确保日期比对准确无误
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        // 艾宾浩斯复习周期
         const deltas = [1, 2, 4, 7, 15, 30, 60, 90, 120];
 
-        // 循环生成 216 天的计划 (96天新课 + 后续纯复习直到第120天周期结束)
-        for (let i = 1; i <= 216; i++) {
-            // 计算当前行的日期
-            let currentDate = new Date(startDate);
-            currentDate.setDate(startDate.getDate() + (i - 1));
-            currentDate.setHours(0, 0, 0, 0);
+        function getFormatDate(dateObj) {
+            let y = dateObj.getFullYear();
+            let m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            let d = String(dateObj.getDate()).padStart(2, '0');
+            return `${y}${m}${d}`;
+        }
 
-            // 格式化日期显示：YYYYMMDD
-            let y = currentDate.getFullYear();
-            let m = String(currentDate.getMonth() + 1).padStart(2, '0');
-            let d = String(currentDate.getDate()).padStart(2, '0');
-            let dateStr = `${y}${m}${d}`;
+        function getDisplayDate(dateObj) {
+            let y = dateObj.getFullYear();
+            let m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            let d = String(dateObj.getDate()).padStart(2, '0');
+            return `${y}年${m}月${d}日`;
+        }
+        
+        function parseDate(dateStr) {
+            return new Date(dateStr.substring(0,4), parseInt(dateStr.substring(4,6))-1, dateStr.substring(6,8));
+        }
 
-            // 计算当天新学习的课文（前96天有，之后为空）
-            let newLesson = i <= 96 ? titles[i] : "";
+        let appData = {};
+        let todayTasksList = { newL: "", revs: [] };
+
+        function initApp() {
+            let saved = localStorage.getItem('nCE2PlanDataV5');
+            let todayObj = new Date();
+            let todayStr = getFormatDate(todayObj);
+
+            if (saved) {
+                appData = JSON.parse(saved);
+                if (!appData.skippedDates) appData.skippedDates = [];
+            } else {
+                appData = {
+                    learnedData: {
+                        "L1. A private conversation": "20260312",
+                        "L2. Breakfast or lunch?": "20260313",
+                        "L3. Please send me a card": "20260314"
+                    },
+                    newLessonIndex: 4, 
+                    carryoverReviews: [],
+                    lastUpdateDate: todayStr,
+                    todayState: { newLesson: "", reviews: {} },
+                    skippedDates: []
+                };
+            }
+
+            if (appData.lastUpdateDate && appData.lastUpdateDate !== todayStr) {
+                let isLastDateSkipped = appData.skippedDates.includes(appData.lastUpdateDate);
+                let hadTaskYesterday = (appData.todayState.newLesson && appData.todayState.newLesson !== "") || Object.keys(appData.todayState.reviews).length > 0;
+                
+                let actedYesterday = false;
+                if (appData.todayState.newLesson === "done" || appData.todayState.newLesson === "delayed") actedYesterday = true;
+                for (let k in appData.todayState.reviews) {
+                    if (appData.todayState.reviews[k] === "done" || appData.todayState.reviews[k] === "delayed") {
+                        actedYesterday = true;
+                        break;
+                    }
+                }
+
+                if (hadTaskYesterday && !actedYesterday && !isLastDateSkipped) {
+                    appData.skippedDates.push(appData.lastUpdateDate);
+                    isLastDateSkipped = true; 
+                }
+
+                if (!isLastDateSkipped) {
+                    if (appData.todayState.newLesson === "done") {
+                        if (appData.newLessonIndex <= 96) {
+                            appData.learnedData[titles[appData.newLessonIndex]] = appData.lastUpdateDate;
+                            appData.newLessonIndex++;
+                        }
+                    }
+                    for (let revLesson in appData.todayState.reviews) {
+                        if (appData.todayState.reviews[revLesson] !== "done") {
+                            if (!appData.carryoverReviews.includes(revLesson)) {
+                                appData.carryoverReviews.push(revLesson);
+                            }
+                        } else {
+                            appData.carryoverReviews = appData.carryoverReviews.filter(item => item !== revLesson);
+                        }
+                    }
+                }
+                
+                appData.lastUpdateDate = todayStr;
+                appData.todayState = { newLesson: "", reviews: {} };
+                saveData();
+            }
+
+            generateTodayTasks(todayObj);
+            renderToday(todayObj);
+            renderTodo(todayObj);
+        }
+
+        function saveData() {
+            localStorage.setItem('nCE2PlanDataV5', JSON.stringify(appData));
+        }
+
+        function calculateEffectiveDiff(startStr, endStr) {
+            let sDate = parseDate(startStr);
+            let eDate = parseDate(endStr);
+            let diffCal = Math.round((eDate - sDate) / (1000 * 60 * 60 * 24));
+            let skipCount = 0;
+            appData.skippedDates.forEach(dStr => {
+                let dDate = parseDate(dStr);
+                if(dDate > sDate && dDate <= eDate) skipCount++;
+            });
+            return diffCal - skipCount;
+        }
+
+        function generateTodayTasks(todayObj) {
+            todayTasksList = { newL: "", revs: [] };
+            let todayStr = getFormatDate(todayObj);
             
-            // 计算当天需要复习的课文
-            let reviews = [];
-            for (let delta of deltas) {
-                let targetDay = i - delta;
-                if (targetDay >= 1 && targetDay <= 96) {
-                    reviews.push(titles[targetDay]);
+            if (appData.skippedDates.includes(todayStr)) return;
+
+            todayTasksList.newL = appData.newLessonIndex <= 96 ? titles[appData.newLessonIndex] : "";
+            if (todayTasksList.newL && (!appData.todayState.newLesson || appData.todayState.newLesson === "")) {
+                appData.todayState.newLesson = "pending";
+            }
+
+            todayTasksList.revs = [...appData.carryoverReviews];
+            
+            for (let lesson in appData.learnedData) {
+                let diffDays = calculateEffectiveDiff(appData.learnedData[lesson], todayStr);
+                if (deltas.includes(diffDays)) {
+                    if (!todayTasksList.revs.includes(lesson)) {
+                        todayTasksList.revs.push(lesson);
+                    }
                 }
             }
-            let reviewStr = reviews.length > 0 ? reviews.join("，") : "无";
 
-            // 判断该行的 CSS 类（过去、今天、未来）
-            let rowClass = "future";
-            if (currentDate.getTime() < today.getTime()) {
-                rowClass = "past";
-            } else if (currentDate.getTime() === today.getTime()) {
-                rowClass = "today";
+            todayTasksList.revs.forEach(rev => {
+                if (!appData.todayState.reviews[rev]) {
+                    appData.todayState.reviews[rev] = "pending";
+                }
+            });
+            saveData();
+        }
+
+        function skipToday() {
+            if(confirm("确定要启动 Not Today 模式吗？\n今日任务将全面隐藏，学习与复习计划将整体完美顺延一天。")) {
+                let todayStr = getFormatDate(new Date());
+                if(!appData.skippedDates.includes(todayStr)) {
+                    appData.skippedDates.push(todayStr);
+                }
+                appData.todayState.newLesson = "skipped";
+                for(let k in appData.todayState.reviews) {
+                    appData.todayState.reviews[k] = "skipped";
+                }
+                saveData();
+                renderToday(new Date());
+                renderTodo(new Date());
+            }
+        }
+
+        function resumeToday() {
+            let todayStr = getFormatDate(new Date());
+            appData.skippedDates = appData.skippedDates.filter(d => d !== todayStr);
+            appData.todayState.newLesson = "";
+            appData.todayState.reviews = {};
+            saveData();
+            generateTodayTasks(new Date());
+            renderToday(new Date());
+            renderTodo(new Date());
+        }
+
+        function updateStatus(type, name, targetStatus) {
+            let currentStatus = type === 'new' ? appData.todayState.newLesson : appData.todayState.reviews[name];
+            let finalStatus = (currentStatus === targetStatus) ? "pending" : targetStatus;
+
+            if (type === 'new') appData.todayState.newLesson = finalStatus;
+            else appData.todayState.reviews[name] = finalStatus;
+            
+            saveData();
+            renderToday(new Date());
+            renderTodo(new Date());
+        }
+
+        function renderToday(todayObj) {
+            document.getElementById('display-date').textContent = getDisplayDate(todayObj);
+            let contentDiv = document.getElementById('today-content');
+            let todayStr = getFormatDate(todayObj);
+            
+            if (appData.skippedDates.includes(todayStr)) {
+                contentDiv.innerHTML = `
+                    <div class="skipped-msg">
+                        ☕️ 今日已开启免打扰休息模式<br><br>
+                        <span style="font-size:0.8em;color:#888;">记忆曲线不受影响，所有计划已自动顺延一天。</span><br><br>
+                        <button class="btn-resume" onclick="resumeToday()">Yes Today! (恢复今日计划)</button>
+                    </div>`;
+                document.getElementById('btn-skip').style.display = 'none';
+                return;
+            } else {
+                document.getElementById('btn-skip').style.display = 'inline-block';
             }
 
-            // 创建行和单元格
-            let tr = document.createElement('tr');
-            tr.className = rowClass;
-            
-            let tdDate = document.createElement('td');
-            tdDate.textContent = dateStr;
-            
-            let tdLearn = document.createElement('td');
-            tdLearn.textContent = newLesson;
-            
-            let tdReview = document.createElement('td');
-            tdReview.textContent = reviewStr;
+            contentDiv.innerHTML = "";
 
-            // 组装并插入表格
-            tr.appendChild(tdDate);
-            tr.appendChild(tdLearn);
-            tr.appendChild(tdReview);
-            tbody.appendChild(tr);
+            if (todayTasksList.newL) {
+                let status = appData.todayState.newLesson;
+                let textClass = "lesson-text type-new";
+                let btnDoneClass = "btn-act";
+                let btnDelayClass = "btn-act";
+
+                if (status === 'done') { textClass += " status-done"; btnDoneClass += " active-done"; }
+                if (status === 'delayed') { textClass += " status-delayed"; btnDelayClass += " active-delay"; }
+
+                contentDiv.innerHTML += `
+                    <div class="row-item">
+                        <div class="label">新学习</div>
+                        <div class="${textClass}">${todayTasksList.newL}</div>
+                        <div class="action-btns">
+                            <button class="${btnDoneClass}" onclick="updateStatus('new', '', 'done')">完成</button>
+                            <button class="${btnDelayClass}" onclick="updateStatus('new', '', 'delayed')">延迟</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            todayTasksList.revs.forEach((rev, index) => {
+                let status = appData.todayState.reviews[rev];
+                let textClass = "lesson-text type-rev";
+                let btnDoneClass = "btn-act";
+                let btnDelayClass = "btn-act";
+
+                if (status === 'done') { textClass += " status-done"; btnDoneClass += " active-done"; }
+                if (status === 'delayed') { textClass += " status-delayed"; btnDelayClass += " active-delay"; }
+
+                contentDiv.innerHTML += `
+                    <div class="row-item">
+                        <div class="label">${index === 0 ? '待复习' : ''}</div>
+                        <div class="${textClass}">${rev}</div>
+                        <div class="action-btns">
+                            <button class="${btnDoneClass}" onclick="updateStatus('rev', '${rev}', 'done')">完成</button>
+                            <button class="${btnDelayClass}" onclick="updateStatus('rev', '${rev}', 'delayed')">延迟</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if(!todayTasksList.newL && todayTasksList.revs.length === 0) {
+                 contentDiv.innerHTML = "<div style='color:#666; margin-top:20px;'>今天没有任何排期，自由安排！</div>";
+            }
         }
+
+        function renderTodo(todayObj) {
+            let tbody = document.getElementById('todo-body');
+            tbody.innerHTML = "";
+            let todayStr = getFormatDate(todayObj);
+
+            let startDate = new Date(2026, 2, 12); 
+            let simDateObj = new Date(startDate);
+            
+            let simIndex = appData.newLessonIndex;
+            let simLearned = JSON.parse(JSON.stringify(appData.learnedData));
+            
+            let delayNew = false;
+            let delayedRevs = [];
+            let todayIsSkipped = appData.skippedDates.includes(todayStr);
+
+            if (!todayIsSkipped) {
+                if (appData.todayState.newLesson === "delayed") delayNew = true;
+                for (let k in appData.todayState.reviews) {
+                    if (appData.todayState.reviews[k] === "delayed") {
+                        delayedRevs.push(k);
+                    }
+                }
+            }
+
+            let pureTodayTime = new Date(todayObj.getFullYear(), todayObj.getMonth(), todayObj.getDate()).getTime();
+            let tomorrowStr = getFormatDate(new Date(todayObj.getTime() + 86400000));
+            
+            let emptyDays = 0;
+            let safeGuardCount = 0;
+
+            while (true) {
+                safeGuardCount++;
+                if (safeGuardCount > 400) break;
+
+                let dStr = getFormatDate(simDateObj);
+                let pureSimTime = new Date(simDateObj.getFullYear(), simDateObj.getMonth(), simDateObj.getDate()).getTime();
+                
+                let sNew = "";
+                let sRevs = [];
+                let revOut = "";
+                let rowClass = "";
+
+                // === 过去 ===
+                if (pureSimTime < pureTodayTime) {
+                    rowClass = "tbl-past";
+                    if (appData.skippedDates.includes(dStr)) {
+                        sNew = "☕️ 休息日 (Not Today)";
+                        revOut = "---";
+                    } else {
+                        for (let lesson in appData.learnedData) {
+                            if (appData.learnedData[lesson] === dStr) {
+                                sNew = lesson;
+                                break;
+                            }
+                        }
+                        for (let lesson in appData.learnedData) {
+                            let lDateStr = appData.learnedData[lesson];
+                            if (lDateStr >= dStr) continue;
+                            let diffDays = calculateEffectiveDiff(lDateStr, dStr);
+                            if (deltas.includes(diffDays)) sRevs.push(lesson);
+                        }
+                        revOut = sRevs.length > 0 ? sRevs.join("，") : "无";
+                    }
+                } 
+                // === 今天 ===
+                else if (pureSimTime === pureTodayTime) {
+                    rowClass = "tbl-today";
+                    if (todayIsSkipped) {
+                        sNew = "☕️ 今日休息 (计划顺延)";
+                        revOut = "---";
+                    } else {
+                        sNew = todayTasksList.newL;
+                        sRevs = [...todayTasksList.revs];
+                        
+                        if (!delayNew && sNew && (appData.todayState.newLesson === "done" || appData.todayState.newLesson === "pending")) {
+                            simLearned[sNew] = dStr;
+                            simIndex++;
+                        }
+                        
+                        let sNewHtml = sNew;
+                        if (delayNew && sNewHtml) {
+                            // 今天延迟的项目：变成灰色 + 下划线
+                            sNewHtml = `<span style="text-decoration:underline;color:#aaa">${sNewHtml}</span>`;
+                        }
+                        
+                        let formattedRevs = [];
+                        sRevs.forEach(r => {
+                            if (delayedRevs.includes(r)) {
+                                // 今天延迟的项目：变成灰色 + 下划线
+                                formattedRevs.push(`<span style="text-decoration:underline;color:#aaa">${r}</span>`);
+                            } else if (appData.carryoverReviews.includes(r)) {
+                                // 昨天欠下的债务在今天正常显示，但加下划线警示
+                                formattedRevs.push(`<span style="text-decoration:underline;">${r}</span>`);
+                            } else {
+                                formattedRevs.push(r);
+                            }
+                        });
+                        
+                        sNew = sNewHtml;
+                        revOut = formattedRevs.length > 0 ? formattedRevs.join("，") : "无";
+                    }
+                } 
+                // === 未来 ===
+                else {
+                    rowClass = "tbl-future";
+                    if (appData.skippedDates.includes(dStr)) {
+                        sNew = "☕️ 休息日 (预设)";
+                        revOut = "---";
+                    } else {
+                        if (simIndex <= 96) {
+                            sNew = titles[simIndex];
+                            simLearned[sNew] = dStr;
+                            simIndex++;
+                        }
+                        for (let lesson in simLearned) {
+                            let lDateStr = simLearned[lesson];
+                            if (lDateStr >= dStr) continue;
+                            let diffDays = calculateEffectiveDiff(lDateStr, dStr);
+                            if (deltas.includes(diffDays)) {
+                                if (!sRevs.includes(lesson)) sRevs.push(lesson);
+                            }
+                        }
+                        if (dStr === tomorrowStr && delayedRevs.length > 0) {
+                            sRevs = [...new Set([...sRevs, ...delayedRevs])];
+                        }
+                        
+                        // 明天：为从今天累加过去的“债务”打上下划线
+                        if (dStr === tomorrowStr && delayNew && sNew) {
+                            sNew = `<span style="text-decoration:underline;">${sNew}</span>`;
+                        }
+                        let formattedRevs = [];
+                        sRevs.forEach(r => {
+                            if (dStr === tomorrowStr && delayedRevs.includes(r)) {
+                                formattedRevs.push(`<span style="text-decoration:underline;">${r}</span>`);
+                            } else {
+                                formattedRevs.push(r);
+                            }
+                        });
+                        
+                        revOut = formattedRevs.length > 0 ? formattedRevs.join("，") : "无";
+                    }
+                }
+
+                if (pureSimTime > pureTodayTime) {
+                    if (!sNew && (!sRevs || sRevs.length === 0) && simIndex > 96) {
+                        emptyDays++;
+                        if (emptyDays > 5) break; 
+                    } else {
+                        emptyDays = 0;
+                    }
+                }
+
+                let tr = document.createElement('tr');
+                tr.className = rowClass;
+                if (pureSimTime === pureTodayTime) {
+                    tr.id = "anchor-today";
+                }
+                tr.innerHTML = `
+                    <td style="text-align:center;font-family:monospace;">${dStr}</td>
+                    <td>${sNew || "无"}</td>
+                    <td>${revOut}</td>
+                `;
+                tbody.appendChild(tr);
+                simDateObj.setDate(simDateObj.getDate() + 1);
+            }
+        }
+
+        function switchTab(tab) {
+            document.getElementById('btn-today').className = 'tab-btn' + (tab === 'today' ? ' active' : '');
+            document.getElementById('btn-todo').className = 'tab-btn' + (tab === 'todo' ? ' active' : '');
+            document.getElementById('today-view').style.display = tab === 'today' ? 'block' : 'none';
+            document.getElementById('todo-view').style.display = tab === 'todo' ? 'block' : 'none';
+            
+            if (tab === 'todo') {
+                setTimeout(() => {
+                    let anchor = document.getElementById('anchor-today');
+                    if(anchor) {
+                        let headerOffset = 60; 
+                        let elementPosition = anchor.getBoundingClientRect().top;
+                        let offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+                    }
+                }, 100);
+            }
+        }
+
+        window.onload = initApp;
+
     </script>
 </body>
 </html>
