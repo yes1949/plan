@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>新概念2 动态学习计划</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -584,5 +587,13 @@
         window.onload = initApp;
 
     </script>
+    // 注册 Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => console.log('SW 注册成功', registration.scope))
+                    .catch(err => console.log('SW 注册失败', err));
+            });
+        }
 </body>
 </html>
