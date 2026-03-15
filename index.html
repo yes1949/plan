@@ -2,10 +2,12 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>新概念2 </title>
+    <title>新概念2 动态学习计划</title>
+    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4CAF50">
     <link rel="apple-touch-icon" href="icon-192.png">
+    
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -48,6 +50,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             font-size: 1.2em;
             line-height: 2;
+            position: relative;
         }
         .today-header {
             display: flex;
@@ -77,7 +80,7 @@
         .type-new { color: red; }
         .type-rev { color: orange; }
         
-        /* 状态样式：延迟状态改为下划线 */
+        /* 状态样式：延迟状态为下划线 */
         .status-done { color: green !important; }
         .status-delayed { text-decoration: underline !important; color: #aaa !important; }
         
@@ -107,6 +110,16 @@
             padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 1em; font-weight: bold;
         }
         .btn-resume:hover { background-color: #45a049; }
+        
+        /* 底部版本号样式 */
+        .version-footer {
+            text-align: center;
+            color: #aaa;
+            font-size: 0.85em;
+            margin-top: 30px;
+            border-top: 1px dashed #eee;
+            padding-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -125,6 +138,7 @@
         </div>
         <div id="today-content">
             </div>
+        <div class="version-footer">v1.1</div>
     </div>
 
     <div id="todo-view">
@@ -479,17 +493,14 @@
                         
                         let sNewHtml = sNew;
                         if (delayNew && sNewHtml) {
-                            // 今天延迟的项目：变成灰色 + 下划线
                             sNewHtml = `<span style="text-decoration:underline;color:#aaa">${sNewHtml}</span>`;
                         }
                         
                         let formattedRevs = [];
                         sRevs.forEach(r => {
                             if (delayedRevs.includes(r)) {
-                                // 今天延迟的项目：变成灰色 + 下划线
                                 formattedRevs.push(`<span style="text-decoration:underline;color:#aaa">${r}</span>`);
                             } else if (appData.carryoverReviews.includes(r)) {
-                                // 昨天欠下的债务在今天正常显示，但加下划线警示
                                 formattedRevs.push(`<span style="text-decoration:underline;">${r}</span>`);
                             } else {
                                 formattedRevs.push(r);
@@ -524,7 +535,6 @@
                             sRevs = [...new Set([...sRevs, ...delayedRevs])];
                         }
                         
-                        // 明天：为从今天累加过去的“债务”打上下划线
                         if (dStr === tomorrowStr && delayNew && sNew) {
                             sNew = `<span style="text-decoration:underline;">${sNew}</span>`;
                         }
@@ -584,8 +594,14 @@
             }
         }
 
+        // ==========================================
+        // 初始化应用
+        // ==========================================
         window.onload = initApp;
 
+        // ==========================================
+        // PWA Service Worker 注册代码 (修复位置)
+        // ==========================================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
