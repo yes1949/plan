@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>新概念英语2 学习计划</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            font-size: 3em;
+            color: #333;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        table {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #eaeaea;
+            padding: 12px 15px;
+            text-align: left;
+            line-height: 1.5;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+        /* 状态样式控制 */
+        .past td {
+            color: #2e8b57; /* 绿色：已完成 */
+        }
+        .today td {
+            color: #ff8c00; /* 橙色：当天 */
+            font-weight: bold; /* 加粗 */
+            background-color: #fff8eb; /* 给今天加一点极淡的背景色突出显示 */
+        }
+        .future td {
+            color: #b0b0b0; /* 浅灰色：待进行 */
+        }
+        /* 为了让表格看起来更整洁，列宽稍微控制一下 */
+        td:nth-child(1) { width: 120px; text-align: center; font-family: monospace; font-size: 1.1em;}
+        td:nth-child(2) { width: 300px; }
+    </style>
+</head>
+<body>
+
+    <h1>just do it.</h1>
+
+    <table id="planTable">
+        <thead>
+            <tr>
+                <th>日期</th>
+                <th>学习</th>
+                <th>复习</th>
+            </tr>
+        </thead>
+        <tbody id="planBody">
+            </tbody>
+    </table>
+
+    <script>
+        // 新概念2全96课标题数据
+        const titles = [
+            "", "L1. A private conversation", "L2. Breakfast or lunch?", "L3. Please send me a card", "L4. An exciting trip", "L5. No wrong numbers", "L6. Percy Buttons", "L7. Too late", "L8. The best and the worst", "L9. A cold welcome", "L10. Not for jazz",
+            "L11. One good turn deserves another", "L12. Goodbye and good luck", "L13. The Greenwood Boys", "L14. Do you speak English?", "L15. Good news", "L16. A polite request", "L17. Always young", "L18. He often does this!", "L19. Sold out", "L20. One man in a boat",
+            "L21. Mad or not?", "L22. A glass envelope", "L23. A new house", "L24. It could be worse", "L25. Do the English speak English?", "L26. The best art critics", "L27. A wet night", "L28. No parking", "L29. Taxi!", "L30. Football or polo?",
+            "L31. Success story", "L32. Shopping made easy", "L33. Out of the darkness", "L34. Quick work", "L35. Stop thief!", "L36. Across the Channel", "L37. The Olympic Games", "L38. Everything except the weather", "L39. Am I all right?", "L40. Food and talk",
+            "L41. Do you call that a hat?", "L42. Not very musical", "L43. Over the South Pole", "L44. Through the forest", "L45. A clear conscience", "L46. Expensive and uncomfortable", "L47. A thirsty ghost", "L48. Did you want to tell me something?", "L49. The end of a dream", "L50. Taken for a ride",
+            "L51. Reward for virtue", "L52. A pretty carpet", "L53. Hot snake", "L54. Sticky fingers", "L55. Not a gold mine", "L56. Faster than sound", "L57. Can I help you, madam?", "L58. A blessing in disguise", "L59. In or out?", "L60. The future",
+            "L61. Trouble with the Hubble", "L62. After the fire", "L63. She was not amused", "L64. The Channel Tunnel", "L65. Jumbo versus the police", "L66. Sweet as honey!", "L67. Volcanoes", "L68. Persistent", "L69. But not murder!", "L70. Red for danger",
+            "L71. A famous clock", "L72. A car called Bluebird", "L73. The record-holder", "L74. Out of the limelight", "L75. SOS", "L76. April Fools' Day", "L77. A successful operation", "L78. The last one?", "L79. By air", "L80. The Crystal Palace",
+            "L81. Escape", "L82. Monster or fish?", "L83. After the elections", "L84. On strike", "L85. Never too old to learn", "L86. Out of control", "L87. A perfect alibi", "L88. Trapped in a mine", "L89. A slip of the tongue", "L90. What's for supper?",
+            "L91. Three men in a basket", "L92. Asking for trouble", "L93. A noble gift", "L94. Future champions", "L95. A fantasy", "L96. The dead return."
+        ];
+
+        const tbody = document.getElementById('planBody');
+        
+        // 设定计划开始日期为 2026年3月12日 (JavaScript中月份从0开始，2代表3月)
+        const startDate = new Date(2026, 2, 12);
+        
+        // 获取系统当前日期，并重置时间为0点，确保日期比对准确无误
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // 艾宾浩斯复习周期
+        const deltas = [1, 2, 4, 7, 15, 30, 60, 90, 120];
+
+        // 循环生成 216 天的计划 (96天新课 + 后续纯复习直到第120天周期结束)
+        for (let i = 1; i <= 216; i++) {
+            // 计算当前行的日期
+            let currentDate = new Date(startDate);
+            currentDate.setDate(startDate.getDate() + (i - 1));
+            currentDate.setHours(0, 0, 0, 0);
+
+            // 格式化日期显示：YYYYMMDD
+            let y = currentDate.getFullYear();
+            let m = String(currentDate.getMonth() + 1).padStart(2, '0');
+            let d = String(currentDate.getDate()).padStart(2, '0');
+            let dateStr = `${y}${m}${d}`;
+
+            // 计算当天新学习的课文（前96天有，之后为空）
+            let newLesson = i <= 96 ? titles[i] : "";
+            
+            // 计算当天需要复习的课文
+            let reviews = [];
+            for (let delta of deltas) {
+                let targetDay = i - delta;
+                if (targetDay >= 1 && targetDay <= 96) {
+                    reviews.push(titles[targetDay]);
+                }
+            }
+            let reviewStr = reviews.length > 0 ? reviews.join("，") : "无";
+
+            // 判断该行的 CSS 类（过去、今天、未来）
+            let rowClass = "future";
+            if (currentDate.getTime() < today.getTime()) {
+                rowClass = "past";
+            } else if (currentDate.getTime() === today.getTime()) {
+                rowClass = "today";
+            }
+
+            // 创建行和单元格
+            let tr = document.createElement('tr');
+            tr.className = rowClass;
+            
+            let tdDate = document.createElement('td');
+            tdDate.textContent = dateStr;
+            
+            let tdLearn = document.createElement('td');
+            tdLearn.textContent = newLesson;
+            
+            let tdReview = document.createElement('td');
+            tdReview.textContent = reviewStr;
+
+            // 组装并插入表格
+            tr.appendChild(tdDate);
+            tr.appendChild(tdLearn);
+            tr.appendChild(tdReview);
+            tbody.appendChild(tr);
+        }
+    </script>
+</body>
+</html>
