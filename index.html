@@ -28,8 +28,8 @@
             margin-bottom: 20px;
         }
         .tab-btn {
-            padding: 12px 35px; /* 增大触控区域 */
-            font-size: 1.3em; /* 增大标签字体 */
+            padding: 10px 30px;
+            font-size: 1.2em;
             cursor: pointer;
             border: none;
             background-color: #ddd;
@@ -40,7 +40,7 @@
         }
         .tab-btn.active { background-color: #4CAF50; color: white; }
         
-        /* TODAY 页面样式：整体放大 */
+        /* TODAY 页面样式 */
         #today-view {
             max-width: 650px;
             margin: 0 auto;
@@ -48,8 +48,8 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            font-size: 1.5em; /* 从 1.2em 放大到 1.5em */
-            line-height: 2.2;
+            font-size: 1.2em;
+            line-height: 2;
             position: relative;
         }
         .today-header {
@@ -57,27 +57,25 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #eee;
-            padding-bottom: 15px;
+            padding-bottom: 10px;
             margin-bottom: 20px;
         }
-        .today-date { color: black; font-weight: bold; font-size: 1.8em; } /* 日期放大 */
+        .today-date { color: black; font-weight: bold; font-size: 1.5em; }
         
         #btn-skip {
-            background-color: #ff4757; color: white; border: none; 
-            padding: 10px 18px; /* 增大触控区域 */
-            font-size: 1.1em; /* 放大字体 */
+            background-color: #ff4757; color: white; border: none; padding: 8px 15px;
             border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
         }
         #btn-skip:hover { background-color: #ff6b81; }
         
         .row-item {
-            margin-bottom: 20px; display: flex; align-items: center;
-            padding: 10px; border-radius: 8px; transition: 0.2s;
+            margin-bottom: 15px; display: flex; align-items: center;
+            padding: 8px; border-radius: 8px; transition: 0.2s;
         }
         .row-item:hover { background-color: #f5f5f5; }
         
-        .label { width: 95px; color: #666; font-size: 1.1em; } /* 拉宽并放大标签 */
-        .lesson-text { flex: 1; font-weight: bold; transition: 0.3s; }
+        .label { width: 80px; color: #666; font-size: 0.9em; }
+        .lesson-text { flex: 1.5; font-weight: bold; transition: 0.3s; }
         
         .type-new { color: red; }
         .type-rev { color: orange; }
@@ -86,14 +84,11 @@
         .status-done { color: green !important; }
         .status-delayed { text-decoration: underline !important; color: #aaa !important; }
         
-        /* 动作按钮：放大适配手机操作 */
-        .action-btns { display: flex; gap: 10px; margin-left: 10px; }
+        /* 动作按钮 */
+        .action-btns { display: flex; gap: 8px; margin-left: 10px; }
         .btn-act {
-            padding: 8px 20px; /* 增大内边距，方便手指点击 */
-            border: 1px solid #ddd; background: white;
-            border-radius: 5px; cursor: pointer; color: #666; 
-            font-size: 1em; /* 放大字体 */
-            font-weight: bold; transition: 0.2s;
+            padding: 5px 15px; border: 1px solid #ddd; background: white;
+            border-radius: 5px; cursor: pointer; color: #666; font-size: 0.85em; font-weight: bold; transition: 0.2s;
         }
         .btn-act:hover { background: #eee; }
         .btn-act.active-done { background: #4CAF50; color: white; border-color: #4CAF50; }
@@ -101,18 +96,18 @@
 
         /* TODO 页面样式 */
         #todo-view { display: none; max-width: 1000px; margin: 0 auto; }
-        table { width: 100%; border-collapse: collapse; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); font-size: 1.1em; } /* TODO表格稍作放大 */
-        th, td { border: 1px solid #eaeaea; padding: 15px 12px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #eaeaea; padding: 12px; text-align: left; }
         th { background-color: #4CAF50; color: white; position: sticky; top: 0; z-index: 10; }
         
         .tbl-past td { color: #2e8b57; } 
         .tbl-today td { color: #ff8c00; font-weight: bold; background-color: #fff8eb; }
         .tbl-future td { color: #b0b0b0; }
         
-        .skipped-msg { text-align: center; color: #ff4757; padding: 40px 0; font-weight: bold; font-size: 1.3em; }
+        .skipped-msg { text-align: center; color: #ff4757; padding: 30px 0; font-weight: bold; font-size: 1.2em; }
         .btn-resume {
-            margin-top: 25px; background-color: #4CAF50; color: white; border: none;
-            padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 1.1em; font-weight: bold;
+            margin-top: 20px; background-color: #4CAF50; color: white; border: none;
+            padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 1em; font-weight: bold;
         }
         .btn-resume:hover { background-color: #45a049; }
         
@@ -120,7 +115,7 @@
         .version-footer {
             text-align: center;
             color: #aaa;
-            font-size: 1em; /* 稍作放大 */
+            font-size: 0.85em;
             margin-top: 30px;
             border-top: 1px dashed #eee;
             padding-top: 15px;
@@ -143,7 +138,7 @@
         </div>
         <div id="today-content">
             </div>
-        <div class="version-footer">v1.2</div>
+        <div class="version-footer">v1.7</div>
     </div>
 
     <div id="todo-view">
@@ -605,7 +600,7 @@
         window.onload = initApp;
 
         // ==========================================
-        // PWA Service Worker 注册代码
+        // PWA Service Worker 注册代码 (修复位置)
         // ==========================================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -618,4 +613,3 @@
     </script>
 </body>
 </html>
-
