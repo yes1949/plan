@@ -14,7 +14,6 @@
             margin: 0;
             padding: 20px;
             background-color: #f9f9f9;
-            /* 阻止移动端左右滑动网页时的默认回弹效果，让手势切换更顺滑 */
             overscroll-behavior-x: none; 
         }
         h1 {
@@ -30,8 +29,8 @@
             margin-bottom: 20px;
         }
         .tab-btn {
-            padding: 10px 30px;
-            font-size: 1.2em;
+            padding: 12px 35px;
+            font-size: 1.3em;
             cursor: pointer;
             border: none;
             background-color: #ddd;
@@ -52,8 +51,8 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            font-size: 1.2em;
-            line-height: 2;
+            font-size: 1.5em;
+            line-height: 2.2;
             position: relative;
             margin-bottom: 25px;
         }
@@ -63,25 +62,26 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
+            padding-bottom: 15px;
             margin-bottom: 20px;
         }
-        .today-date { color: black; font-weight: bold; font-size: 1.5em; }
+        .today-date { color: black; font-weight: bold; font-size: 1.8em; }
         
         #btn-skip {
-            background-color: #ff4757; color: white; border: none; padding: 8px 15px;
+            background-color: #ff4757; color: white; border: none; padding: 10px 18px;
+            font-size: 1.1em;
             border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
         }
         #btn-skip:hover { background-color: #ff6b81; }
         
         .row-item {
-            margin-bottom: 15px; display: flex; align-items: center;
-            padding: 8px; border-radius: 8px; transition: 0.2s;
+            margin-bottom: 20px; display: flex; align-items: center;
+            padding: 10px; border-radius: 8px; transition: 0.2s;
         }
         .row-item:hover { background-color: #f5f5f5; }
         
-        .label { width: 80px; color: #666; font-size: 0.9em; }
-        .lesson-text { flex: 5.7; font-weight: bold; transition: 0.3s; }
+        .label { width: 95px; color: #666; font-size: 1.1em; }
+        .lesson-text { flex: 5.2; font-weight: bold; transition: 0.3s; }
         
         .type-new { color: red; }
         .type-rev { color: orange; }
@@ -91,10 +91,10 @@
         .status-delayed { text-decoration: underline !important; color: #aaa !important; }
         
         /* 动作按钮 */
-        .action-btns { display: flex; gap: 8px; margin-left: 10px; }
+        .action-btns { display: flex; gap: 10px; margin-left: 10px; }
         .btn-act {
-            padding: 5px 15px; border: 1px solid #ddd; background: white;
-            border-radius: 5px; cursor: pointer; color: #666; font-size: 0.85em; font-weight: bold; transition: 0.2s;
+            padding: 8px 20px; border: 1px solid #ddd; background: white;
+            border-radius: 5px; cursor: pointer; color: #666; font-size: 1em; font-weight: bold; transition: 0.2s;
         }
         .btn-act:hover { background: #eee; }
         .btn-act.active-done { background: #4CAF50; color: white; border-color: #4CAF50; }
@@ -102,18 +102,18 @@
 
         /* TODO 页面样式 */
         #todo-view { display: none; max-width: 1000px; margin: 0 auto; }
-        table { width: 100%; border-collapse: collapse; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        th, td { border: 1px solid #eaeaea; padding: 12px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); font-size: 1.1em;}
+        th, td { border: 1px solid #eaeaea; padding: 15px 12px; text-align: left; }
         th { background-color: #4CAF50; color: white; position: sticky; top: 0; z-index: 10; }
         
         .tbl-past td { color: #2e8b57; } 
         .tbl-today td { color: #ff8c00; font-weight: bold; background-color: #fff8eb; }
         .tbl-future td { color: #b0b0b0; }
         
-        .skipped-msg { text-align: center; color: #ff4757; padding: 30px 0; font-weight: bold; font-size: 1.2em; }
+        .skipped-msg { text-align: center; color: #ff4757; padding: 40px 0; font-weight: bold; font-size: 1.3em; }
         .btn-resume {
-            margin-top: 20px; background-color: #4CAF50; color: white; border: none;
-            padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 1em; font-weight: bold;
+            margin-top: 25px; background-color: #4CAF50; color: white; border: none;
+            padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 1.1em; font-weight: bold;
         }
         .btn-resume:hover { background-color: #45a049; }
         
@@ -121,7 +121,7 @@
         .version-footer {
             text-align: center;
             color: #aaa;
-            font-size: 0.85em;
+            font-size: 1em;
             margin-top: 30px;
             border-top: 1px dashed #eee;
             padding-top: 15px;
@@ -158,9 +158,9 @@
         </div>
 
         <div class="card-container" id="yesterday-card" style="display: none;">
-            </div>
+        </div>
 
-        <div class="version-footer">v3.1</div>
+        <div class="version-footer">v3.2</div>
     </div>
 
     <div id="todo-view">
@@ -173,7 +173,7 @@
                 </tr>
             </thead>
             <tbody id="todo-body">
-                </tbody>
+            </tbody>
         </table>
     </div>
 
@@ -214,8 +214,8 @@
         let todayTasksList = { newL: "", revs: [] };
 
         function initApp() {
-            // 使用 V6 防止与旧逻辑冲突
-            let saved = localStorage.getItem('nCE2PlanDataV6');
+            // 启用 V7 隔离存储，彻底解决数据错乱问题
+            let saved = localStorage.getItem('nCE2PlanDataV7');
             let todayObj = new Date();
             let todayStr = getFormatDate(todayObj);
 
@@ -229,15 +229,15 @@
                         "L1. A private conversation": "20260312",
                         "L2. Breakfast or lunch?": "20260313",
                         "L3. Please send me a card": "20260314",
-                        "L4. An exciting trip": "20260315"
+                        "L4. An exciting trip": "20260315" // 🔥 精准补齐昨天(3月15日)的进度
                     },
-                    newLessonIndex: 4, 
+                    newLessonIndex: 5, // 🔥 修正：今天(3月16日)应该是 L5 
                     carryoverReviews: [],
                     lastUpdateDate: todayStr,
                     todayState: { newLesson: "", reviews: {} },
                     skippedDates: [],
-                    currentTasks: { newL: "", revs: [] }, // 用于备份当日分配的任务
-                    yesterdaySnap: null // 昨日快照，用于补录
+                    currentTasks: { newL: "", revs: [] },
+                    yesterdaySnap: null 
                 };
             }
 
@@ -255,7 +255,6 @@
                     }
                 }
 
-                // 备份昨日快照（仅当时间正好相差一天时才建立昨日快照，跨多天则抛弃）
                 let yesterdayDateObj = new Date(todayObj.getTime() - 86400000);
                 let strictlyYesterdayStr = getFormatDate(yesterdayDateObj);
                 
@@ -270,13 +269,11 @@
                     appData.yesterdaySnap = null;
                 }
 
-                // 自动跳过判定
                 if (hadTaskYesterday && !actedYesterday && !isLastDateSkipped) {
                     appData.skippedDates.push(appData.lastUpdateDate);
                     isLastDateSkipped = true; 
                 }
 
-                // 正常的每日结算推演
                 if (!isLastDateSkipped) {
                     if (appData.todayState.newLesson === "done") {
                         if (appData.newLessonIndex <= 96) {
@@ -297,18 +294,18 @@
                 
                 appData.lastUpdateDate = todayStr;
                 appData.todayState = { newLesson: "", reviews: {} };
-                appData.currentTasks = { newL: "", revs: [] }; // 清空当前任务备份
+                appData.currentTasks = { newL: "", revs: [] }; 
                 saveData();
             }
 
             generateTodayTasks(todayObj);
             renderToday(todayObj);
             renderTodo(todayObj);
-            initSwipeGestures(); // 初始化滑动事件
+            initSwipeGestures(); 
         }
 
         function saveData() {
-            localStorage.setItem('nCE2PlanDataV6', JSON.stringify(appData));
+            localStorage.setItem('nCE2PlanDataV7', JSON.stringify(appData));
         }
 
         function calculateEffectiveDiff(startStr, endStr) {
@@ -351,7 +348,6 @@
                 }
             });
 
-            // 备份今天生成的任务，以备明天使用
             appData.currentTasks = {
                 newL: todayTasksList.newL,
                 revs: [...todayTasksList.revs]
@@ -414,37 +410,30 @@
             if (type === 'new') {
                 yState.newLesson = finalStatus;
                 if (wasDone && !isDone) {
-                    // 如果撤销了昨天的“完成”，退回新课进度
                     delete appData.learnedData[appData.yesterdaySnap.tasks.newL];
                     appData.newLessonIndex--;
                 } else if (!wasDone && isDone) {
-                    // 如果补登了昨天的“完成”，推进新课进度
                     appData.learnedData[appData.yesterdaySnap.tasks.newL] = appData.yesterdaySnap.date;
                     appData.newLessonIndex++;
                 }
             } else {
                 yState.reviews[name] = finalStatus;
                 if (wasDone && !isDone) {
-                    // 撤销复习，重新变为债务丢进今天的carryover
                     if (!appData.carryoverReviews.includes(name)) appData.carryoverReviews.push(name);
                 } else if (!wasDone && isDone) {
-                    // 补登复习，从债务列表中消掉
                     appData.carryoverReviews = appData.carryoverReviews.filter(n => n !== name);
                 }
             }
             
             saveData();
-            // 昨天的状态改变后，今天的任务排期会受到影响，所以需要重算今天
             generateTodayTasks(new Date());
             renderToday(new Date());
             renderTodo(new Date());
         }
 
         function restoreYesterdayAutoSkip() {
-            // 撤销昨天的自动顺延，允许补录
             appData.skippedDates = appData.skippedDates.filter(d => d !== appData.yesterdaySnap.date);
             appData.yesterdaySnap.autoSkipped = false;
-            // 原本被顺延的复习任务，现在正式变成历史债务进入 carryover
             appData.yesterdaySnap.tasks.revs.forEach(r => {
                 if(!appData.carryoverReviews.includes(r)) appData.carryoverReviews.push(r);
             });
@@ -453,7 +442,6 @@
             renderToday(new Date());
             renderTodo(new Date());
         }
-
 
         // ==========================================
         //  渲染视图
@@ -767,7 +755,6 @@
                 setTimeout(() => {
                     let anchor = document.getElementById('anchor-today');
                     if(anchor) {
-                        // 偏移量增加 200，使得今天的数据正好显示在屏幕偏下的位置（大约第4行）
                         let headerOffset = 60 + 200; 
                         let elementPosition = anchor.getBoundingClientRect().top;
                         let offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -798,13 +785,10 @@
                 let xDiff = touchendX - touchstartX;
                 let yDiff = touchendY - touchstartY;
 
-                // 只有当横向滑动距离大于垂直滑动，且滑动距离超过 60px 时才触发页面切换
                 if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 60) {
                     if (xDiff < 0 && currentTab === 'today') {
-                        // 向左滑：进入 TODO
                         switchTab('todo');
                     } else if (xDiff > 0 && currentTab === 'todo') {
-                        // 向右滑：回到 TODAY
                         switchTab('today');
                     }
                 }
