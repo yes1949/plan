@@ -14,6 +14,8 @@
             margin: 0;
             padding: 20px;
             background-color: #f9f9f9;
+            /* 阻止移动端左右滑动网页时的默认回弹效果，让手势切换更顺滑 */
+            overscroll-behavior-x: none; 
         }
         h1 {
             text-align: center;
@@ -44,6 +46,8 @@
         #today-view {
             max-width: 650px;
             margin: 0 auto;
+        }
+        .card-container {
             background: white;
             padding: 30px;
             border-radius: 10px;
@@ -51,7 +55,9 @@
             font-size: 1.2em;
             line-height: 2;
             position: relative;
+            margin-bottom: 25px;
         }
+        
         .today-header {
             display: flex;
             justify-content: space-between;
@@ -75,7 +81,7 @@
         .row-item:hover { background-color: #f5f5f5; }
         
         .label { width: 80px; color: #666; font-size: 0.9em; }
-        .lesson-text { flex: 2.2; font-weight: bold; transition: 0.3s; }
+        .lesson-text { flex: 2.7; font-weight: bold; transition: 0.3s; }
         
         .type-new { color: red; }
         .type-rev { color: orange; }
@@ -120,6 +126,17 @@
             border-top: 1px dashed #eee;
             padding-top: 15px;
         }
+
+        /* 昨日卡片特定样式 */
+        #yesterday-card {
+            border-left: 6px solid #b0b0b0;
+            background: #fdfdfd;
+        }
+        .y-header-text {
+            color: #888;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -132,13 +149,18 @@
     </div>
 
     <div id="today-view">
-        <div class="today-header">
-            <div class="today-date" id="display-date"></div>
-            <button id="btn-skip" onclick="skipToday()">Not Today</button>
-        </div>
-        <div id="today-content">
+        <div class="card-container" id="today-card">
+            <div class="today-header">
+                <div class="today-date" id="display-date"></div>
+                <button id="btn-skip" onclick="skipToday()">Not Today</button>
             </div>
-        <div class="version-footer">v2.1</div>
+            <div id="today-content"></div>
+        </div>
+
+        <div class="card-container" id="yesterday-card" style="display: none;">
+            </div>
+
+        <div class="version-footer">v3.0</div>
     </div>
 
     <div id="todo-view">
@@ -192,13 +214,15 @@
         let todayTasksList = { newL: "", revs: [] };
 
         function initApp() {
-            let saved = localStorage.getItem('nCE2PlanDataV5');
+            // 使用 V6 防止与旧逻辑冲突
+            let saved = localStorage.getItem('nCE2PlanDataV6');
             let todayObj = new Date();
             let todayStr = getFormatDate(todayObj);
 
             if (saved) {
                 appData = JSON.parse(saved);
                 if (!appData.skippedDates) appData.skippedDates = [];
+                if (!appData.currentTasks) appData.currentTasks = { newL: "", revs: [] };
             } else {
                 appData = {
                     learnedData: {
@@ -210,10 +234,13 @@
                     carryoverReviews: [],
                     lastUpdateDate: todayStr,
                     todayState: { newLesson: "", reviews: {} },
-                    skippedDates: []
+                    skippedDates: [],
+                    currentTasks: { newL: "", revs: [] }, // 用于备份当日分配的任务
+                    yesterdaySnap: null // 昨日快照，用于补录
                 };
             }
 
+            // ====== 跨日结算与备份逻辑 ======
             if (appData.lastUpdateDate && appData.lastUpdateDate !== todayStr) {
                 let isLastDateSkipped = appData.skippedDates.includes(appData.lastUpdateDate);
                 let hadTaskYesterday = (appData.todayState.newLesson && appData.todayState.newLesson !== "") || Object.keys(appData.todayState.reviews).length > 0;
@@ -227,11 +254,28 @@
                     }
                 }
 
+                // 备份昨日快照（仅当时间正好相差一天时才建立昨日快照，跨多天则抛弃）
+                let yesterdayDateObj = new Date(todayObj.getTime() - 86400000);
+                let strictlyYesterdayStr = getFormatDate(yesterdayDateObj);
+                
+                if (appData.lastUpdateDate === strictlyYesterdayStr) {
+                    appData.yesterdaySnap = {
+                        date: appData.lastUpdateDate,
+                        tasks: JSON.parse(JSON.stringify(appData.currentTasks)),
+                        state: JSON.parse(JSON.stringify(appData.todayState)),
+                        autoSkipped: (hadTaskYesterday && !actedYesterday && !isLastDateSkipped)
+                    };
+                } else {
+                    appData.yesterdaySnap = null;
+                }
+
+                // 自动跳过判定
                 if (hadTaskYesterday && !actedYesterday && !isLastDateSkipped) {
                     appData.skippedDates.push(appData.lastUpdateDate);
                     isLastDateSkipped = true; 
                 }
 
+                // 正常的每日结算推演
                 if (!isLastDateSkipped) {
                     if (appData.todayState.newLesson === "done") {
                         if (appData.newLessonIndex <= 96) {
@@ -252,16 +296,18 @@
                 
                 appData.lastUpdateDate = todayStr;
                 appData.todayState = { newLesson: "", reviews: {} };
+                appData.currentTasks = { newL: "", revs: [] }; // 清空当前任务备份
                 saveData();
             }
 
             generateTodayTasks(todayObj);
             renderToday(todayObj);
             renderTodo(todayObj);
+            initSwipeGestures(); // 初始化滑动事件
         }
 
         function saveData() {
-            localStorage.setItem('nCE2PlanDataV5', JSON.stringify(appData));
+            localStorage.setItem('nCE2PlanDataV6', JSON.stringify(appData));
         }
 
         function calculateEffectiveDiff(startStr, endStr) {
@@ -303,9 +349,19 @@
                     appData.todayState.reviews[rev] = "pending";
                 }
             });
+
+            // 备份今天生成的任务，以备明天使用
+            appData.currentTasks = {
+                newL: todayTasksList.newL,
+                revs: [...todayTasksList.revs]
+            };
+
             saveData();
         }
 
+        // ==========================================
+        //  状态交互逻辑
+        // ==========================================
         function skipToday() {
             if(confirm("确定要启动 Not Today 模式吗？\n今日任务将全面隐藏，学习与复习计划将整体完美顺延一天。")) {
                 let todayStr = getFormatDate(new Date());
@@ -345,11 +401,133 @@
             renderTodo(new Date());
         }
 
+        // ====== 核心：昨天卡片补录交互 ======
+        function updateYesterdayStatus(type, name, targetStatus) {
+            let yState = appData.yesterdaySnap.state;
+            let currentStatus = type === 'new' ? yState.newLesson : yState.reviews[name];
+            let finalStatus = (currentStatus === targetStatus) ? "pending" : targetStatus;
+
+            let wasDone = (currentStatus === 'done');
+            let isDone = (finalStatus === 'done');
+
+            if (type === 'new') {
+                yState.newLesson = finalStatus;
+                if (wasDone && !isDone) {
+                    // 如果撤销了昨天的“完成”，退回新课进度
+                    delete appData.learnedData[appData.yesterdaySnap.tasks.newL];
+                    appData.newLessonIndex--;
+                } else if (!wasDone && isDone) {
+                    // 如果补登了昨天的“完成”，推进新课进度
+                    appData.learnedData[appData.yesterdaySnap.tasks.newL] = appData.yesterdaySnap.date;
+                    appData.newLessonIndex++;
+                }
+            } else {
+                yState.reviews[name] = finalStatus;
+                if (wasDone && !isDone) {
+                    // 撤销复习，重新变为债务丢进今天的carryover
+                    if (!appData.carryoverReviews.includes(name)) appData.carryoverReviews.push(name);
+                } else if (!wasDone && isDone) {
+                    // 补登复习，从债务列表中消掉
+                    appData.carryoverReviews = appData.carryoverReviews.filter(n => n !== name);
+                }
+            }
+            
+            saveData();
+            // 昨天的状态改变后，今天的任务排期会受到影响，所以需要重算今天
+            generateTodayTasks(new Date());
+            renderToday(new Date());
+            renderTodo(new Date());
+        }
+
+        function restoreYesterdayAutoSkip() {
+            // 撤销昨天的自动顺延，允许补录
+            appData.skippedDates = appData.skippedDates.filter(d => d !== appData.yesterdaySnap.date);
+            appData.yesterdaySnap.autoSkipped = false;
+            // 原本被顺延的复习任务，现在正式变成历史债务进入 carryover
+            appData.yesterdaySnap.tasks.revs.forEach(r => {
+                if(!appData.carryoverReviews.includes(r)) appData.carryoverReviews.push(r);
+            });
+            saveData();
+            generateTodayTasks(new Date());
+            renderToday(new Date());
+            renderTodo(new Date());
+        }
+
+
+        // ==========================================
+        //  渲染视图
+        // ==========================================
         function renderToday(todayObj) {
             document.getElementById('display-date').textContent = getDisplayDate(todayObj);
             let contentDiv = document.getElementById('today-content');
+            let yesterdayCard = document.getElementById('yesterday-card');
             let todayStr = getFormatDate(todayObj);
             
+            // --- 渲染昨天卡片 ---
+            let strictlyYesterdayStr = getFormatDate(new Date(todayObj.getTime() - 86400000));
+            if (appData.yesterdaySnap && appData.yesterdaySnap.date === strictlyYesterdayStr) {
+                yesterdayCard.style.display = 'block';
+                let yDateShow = `${strictlyYesterdayStr.substring(4,6)}月${strictlyYesterdayStr.substring(6,8)}日`;
+                
+                let yHtml = `
+                    <div class="today-header" style="border-bottom: 1px dashed #ccc;">
+                        <div class="y-header-text">昨日补录 (${yDateShow})</div>
+                    </div>`;
+
+                if (appData.yesterdaySnap.autoSkipped) {
+                    yHtml += `
+                        <div class="skipped-msg" style="padding: 15px 0; font-size: 1em; color: #d9534f;">
+                            ⚠️ 因昨日未操作，进度已自动顺延<br>
+                            <button class="btn-resume" style="margin-top:15px; padding: 8px 15px; font-size: 0.9em; background:#aaa;" onclick="restoreYesterdayAutoSkip()">
+                                取消顺延，我要补录昨日进度
+                            </button>
+                        </div>`;
+                } else {
+                    let yTasks = appData.yesterdaySnap.tasks;
+                    let yState = appData.yesterdaySnap.state;
+
+                    if (yTasks.newL) {
+                        let status = yState.newLesson;
+                        let textClass = "lesson-text type-new";
+                        let btnDoneClass = "btn-act"; let btnDelayClass = "btn-act";
+                        if (status === 'done') { textClass += " status-done"; btnDoneClass += " active-done"; }
+                        if (status === 'delayed') { textClass += " status-delayed"; btnDelayClass += " active-delay"; }
+                        yHtml += `
+                            <div class="row-item" style="background:#f4f4f4;">
+                                <div class="label">新学习</div>
+                                <div class="${textClass}">${yTasks.newL}</div>
+                                <div class="action-btns">
+                                    <button class="${btnDoneClass}" onclick="updateYesterdayStatus('new', '', 'done')">完成</button>
+                                    <button class="${btnDelayClass}" onclick="updateYesterdayStatus('new', '', 'delayed')">延迟</button>
+                                </div>
+                            </div>`;
+                    }
+                    yTasks.revs.forEach((rev, index) => {
+                        let status = yState.reviews[rev];
+                        let textClass = "lesson-text type-rev";
+                        let btnDoneClass = "btn-act"; let btnDelayClass = "btn-act";
+                        if (status === 'done') { textClass += " status-done"; btnDoneClass += " active-done"; }
+                        if (status === 'delayed') { textClass += " status-delayed"; btnDelayClass += " active-delay"; }
+                        yHtml += `
+                            <div class="row-item" style="background:#f4f4f4;">
+                                <div class="label">${index === 0 ? '待复习' : ''}</div>
+                                <div class="${textClass}">${rev}</div>
+                                <div class="action-btns">
+                                    <button class="${btnDoneClass}" onclick="updateYesterdayStatus('rev', '${rev}', 'done')">完成</button>
+                                    <button class="${btnDelayClass}" onclick="updateYesterdayStatus('rev', '${rev}', 'delayed')">延迟</button>
+                                </div>
+                            </div>`;
+                    });
+                    if(!yTasks.newL && yTasks.revs.length === 0) {
+                        yHtml += "<div style='color:#999; margin-top:10px; font-size: 0.9em;'>昨日无学习安排。</div>";
+                    }
+                }
+                yesterdayCard.innerHTML = yHtml;
+            } else {
+                yesterdayCard.style.display = 'none';
+            }
+
+            // --- 渲染今天卡片 ---
             if (appData.skippedDates.includes(todayStr)) {
                 contentDiv.innerHTML = `
                     <div class="skipped-msg">
@@ -454,11 +632,10 @@
                 let revOut = "";
                 let rowClass = "";
 
-                // === 过去 ===
                 if (pureSimTime < pureTodayTime) {
                     rowClass = "tbl-past";
                     if (appData.skippedDates.includes(dStr)) {
-                        sNew = "☕️ 休息日 (Not Today)";
+                        sNew = "☕️ 休息日";
                         revOut = "---";
                     } else {
                         for (let lesson in appData.learnedData) {
@@ -476,7 +653,6 @@
                         revOut = sRevs.length > 0 ? sRevs.join("，") : "无";
                     }
                 } 
-                // === 今天 ===
                 else if (pureSimTime === pureTodayTime) {
                     rowClass = "tbl-today";
                     if (todayIsSkipped) {
@@ -511,7 +687,6 @@
                         revOut = formattedRevs.length > 0 ? formattedRevs.join("，") : "无";
                     }
                 } 
-                // === 未来 ===
                 else {
                     rowClass = "tbl-future";
                     if (appData.skippedDates.includes(dStr)) {
@@ -575,7 +750,13 @@
             }
         }
 
+        // ==========================================
+        //  手势滑动与页面切换逻辑
+        // ==========================================
+        let currentTab = 'today';
+        
         function switchTab(tab) {
+            currentTab = tab;
             document.getElementById('btn-today').className = 'tab-btn' + (tab === 'today' ? ' active' : '');
             document.getElementById('btn-todo').className = 'tab-btn' + (tab === 'todo' ? ' active' : '');
             document.getElementById('today-view').style.display = tab === 'today' ? 'block' : 'none';
@@ -585,12 +766,47 @@
                 setTimeout(() => {
                     let anchor = document.getElementById('anchor-today');
                     if(anchor) {
-                        let headerOffset = 60; 
+                        // 偏移量增加 200，使得今天的数据正好显示在屏幕偏下的位置（大约第4行）
+                        let headerOffset = 60 + 200; 
                         let elementPosition = anchor.getBoundingClientRect().top;
                         let offsetPosition = elementPosition + window.pageYOffset - headerOffset;
                         window.scrollTo({ top: offsetPosition, behavior: "smooth" });
                     }
                 }, 100);
+            }
+        }
+
+        function initSwipeGestures() {
+            let touchstartX = 0;
+            let touchendX = 0;
+            let touchstartY = 0;
+            let touchendY = 0;
+
+            document.addEventListener('touchstart', function(event) {
+                touchstartX = event.changedTouches[0].screenX;
+                touchstartY = event.changedTouches[0].screenY;
+            }, {passive: true});
+
+            document.addEventListener('touchend', function(event) {
+                touchendX = event.changedTouches[0].screenX;
+                touchendY = event.changedTouches[0].screenY;
+                handleSwipe();
+            }, {passive: true});
+
+            function handleSwipe() {
+                let xDiff = touchendX - touchstartX;
+                let yDiff = touchendY - touchstartY;
+
+                // 只有当横向滑动距离大于垂直滑动，且滑动距离超过 60px 时才触发页面切换
+                if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 60) {
+                    if (xDiff < 0 && currentTab === 'today') {
+                        // 向左滑：进入 TODO
+                        switchTab('todo');
+                    } else if (xDiff > 0 && currentTab === 'todo') {
+                        // 向右滑：回到 TODAY
+                        switchTab('today');
+                    }
+                }
             }
         }
 
@@ -600,7 +816,7 @@
         window.onload = initApp;
 
         // ==========================================
-        // PWA Service Worker 注册代码 (修复位置)
+        // PWA Service Worker 注册代码
         // ==========================================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
