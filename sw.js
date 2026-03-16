@@ -1,5 +1,5 @@
 // 每次修改了 index.html 的代码，只需在这里把 v1 改成 v2、v3... 即可触发用户的静默更新
-const CACHE_NAME = 'nce2-plan-v2.1'; 
+const CACHE_NAME = 'nce2-plan-v3.0'; 
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
