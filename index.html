@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>新概念2 动态学习计划</title>
-    
+    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4CAF50">
     <link rel="apple-touch-icon" href="icon-192.png">
-    
+    
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -28,8 +28,8 @@
             margin-bottom: 20px;
         }
         .tab-btn {
-            padding: 10px 30px;
-            font-size: 1.2em;
+            padding: 12px 35px; /* 增大触控区域 */
+            font-size: 1.3em; /* 增大标签字体 */
             cursor: pointer;
             border: none;
             background-color: #ddd;
@@ -39,8 +39,8 @@
             transition: 0.3s;
         }
         .tab-btn.active { background-color: #4CAF50; color: white; }
-        
-        /* TODAY 页面样式 */
+        
+        /* TODAY 页面样式：整体放大 */
         #today-view {
             max-width: 650px;
             margin: 0 auto;
@@ -48,8 +48,8 @@
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            font-size: 1.2em;
-            line-height: 2;
+            font-size: 1.5em; /* 从 1.2em 放大到 1.5em */
+            line-height: 2.2;
             position: relative;
         }
         .today-header {
@@ -57,38 +57,43 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
+            padding-bottom: 15px;
             margin-bottom: 20px;
         }
-        .today-date { color: black; font-weight: bold; font-size: 1.5em; }
-        
+        .today-date { color: black; font-weight: bold; font-size: 1.8em; } /* 日期放大 */
+        
         #btn-skip {
-            background-color: #ff4757; color: white; border: none; padding: 8px 15px;
+            background-color: #ff4757; color: white; border: none; 
+            padding: 10px 18px; /* 增大触控区域 */
+            font-size: 1.1em; /* 放大字体 */
             border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
         }
         #btn-skip:hover { background-color: #ff6b81; }
-        
+        
         .row-item {
-            margin-bottom: 15px; display: flex; align-items: center;
-            padding: 8px; border-radius: 8px; transition: 0.2s;
+            margin-bottom: 20px; display: flex; align-items: center;
+            padding: 10px; border-radius: 8px; transition: 0.2s;
         }
         .row-item:hover { background-color: #f5f5f5; }
-        
-        .label { width: 80px; color: #666; font-size: 0.9em; }
+        
+        .label { width: 95px; color: #666; font-size: 1.1em; } /* 拉宽并放大标签 */
         .lesson-text { flex: 1; font-weight: bold; transition: 0.3s; }
-        
+        
         .type-new { color: red; }
         .type-rev { color: orange; }
-        
+        
         /* 状态样式：延迟状态为下划线 */
         .status-done { color: green !important; }
         .status-delayed { text-decoration: underline !important; color: #aaa !important; }
-        
-        /* 动作按钮 */
-        .action-btns { display: flex; gap: 8px; margin-left: 10px; }
+        
+        /* 动作按钮：放大适配手机操作 */
+        .action-btns { display: flex; gap: 10px; margin-left: 10px; }
         .btn-act {
-            padding: 5px 15px; border: 1px solid #ddd; background: white;
-            border-radius: 5px; cursor: pointer; color: #666; font-size: 0.85em; font-weight: bold; transition: 0.2s;
+            padding: 8px 20px; /* 增大内边距，方便手指点击 */
+            border: 1px solid #ddd; background: white;
+            border-radius: 5px; cursor: pointer; color: #666; 
+            font-size: 1em; /* 放大字体 */
+            font-weight: bold; transition: 0.2s;
         }
         .btn-act:hover { background: #eee; }
         .btn-act.active-done { background: #4CAF50; color: white; border-color: #4CAF50; }
@@ -96,26 +101,26 @@
 
         /* TODO 页面样式 */
         #todo-view { display: none; max-width: 1000px; margin: 0 auto; }
-        table { width: 100%; border-collapse: collapse; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        th, td { border: 1px solid #eaeaea; padding: 12px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; background-color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.1); font-size: 1.1em; } /* TODO表格稍作放大 */
+        th, td { border: 1px solid #eaeaea; padding: 15px 12px; text-align: left; }
         th { background-color: #4CAF50; color: white; position: sticky; top: 0; z-index: 10; }
-        
-        .tbl-past td { color: #2e8b57; } 
+        
+        .tbl-past td { color: #2e8b57; } 
         .tbl-today td { color: #ff8c00; font-weight: bold; background-color: #fff8eb; }
         .tbl-future td { color: #b0b0b0; }
-        
-        .skipped-msg { text-align: center; color: #ff4757; padding: 30px 0; font-weight: bold; font-size: 1.2em; }
+        
+        .skipped-msg { text-align: center; color: #ff4757; padding: 40px 0; font-weight: bold; font-size: 1.3em; }
         .btn-resume {
-            margin-top: 20px; background-color: #4CAF50; color: white; border: none;
-            padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 1em; font-weight: bold;
+            margin-top: 25px; background-color: #4CAF50; color: white; border: none;
+            padding: 12px 25px; border-radius: 5px; cursor: pointer; font-size: 1.1em; font-weight: bold;
         }
         .btn-resume:hover { background-color: #45a049; }
-        
+        
         /* 底部版本号样式 */
         .version-footer {
             text-align: center;
             color: #aaa;
-            font-size: 0.85em;
+            font-size: 1em; /* 稍作放大 */
             margin-top: 30px;
             border-top: 1px dashed #eee;
             padding-top: 15px;
@@ -125,7 +130,7 @@
 <body>
 
     <h1>just do it.</h1>
-    
+    
     <div class="tabs">
         <button id="btn-today" class="tab-btn active" onclick="switchTab('today')">TODAY</button>
         <button id="btn-todo" class="tab-btn" onclick="switchTab('todo')">TODO</button>
@@ -138,7 +143,7 @@
         </div>
         <div id="today-content">
             </div>
-        <div class="version-footer">v1.1</div>
+        <div class="version-footer">v1.2</div>
     </div>
 
     <div id="todo-view">
@@ -183,7 +188,7 @@
             let d = String(dateObj.getDate()).padStart(2, '0');
             return `${y}年${m}月${d}日`;
         }
-        
+        
         function parseDate(dateStr) {
             return new Date(dateStr.substring(0,4), parseInt(dateStr.substring(4,6))-1, dateStr.substring(6,8));
         }
@@ -206,7 +211,7 @@
                         "L2. Breakfast or lunch?": "20260313",
                         "L3. Please send me a card": "20260314"
                     },
-                    newLessonIndex: 4, 
+                    newLessonIndex: 4, 
                     carryoverReviews: [],
                     lastUpdateDate: todayStr,
                     todayState: { newLesson: "", reviews: {} },
@@ -217,7 +222,7 @@
             if (appData.lastUpdateDate && appData.lastUpdateDate !== todayStr) {
                 let isLastDateSkipped = appData.skippedDates.includes(appData.lastUpdateDate);
                 let hadTaskYesterday = (appData.todayState.newLesson && appData.todayState.newLesson !== "") || Object.keys(appData.todayState.reviews).length > 0;
-                
+                
                 let actedYesterday = false;
                 if (appData.todayState.newLesson === "done" || appData.todayState.newLesson === "delayed") actedYesterday = true;
                 for (let k in appData.todayState.reviews) {
@@ -229,7 +234,7 @@
 
                 if (hadTaskYesterday && !actedYesterday && !isLastDateSkipped) {
                     appData.skippedDates.push(appData.lastUpdateDate);
-                    isLastDateSkipped = true; 
+                    isLastDateSkipped = true; 
                 }
 
                 if (!isLastDateSkipped) {
@@ -249,7 +254,7 @@
                         }
                     }
                 }
-                
+                
                 appData.lastUpdateDate = todayStr;
                 appData.todayState = { newLesson: "", reviews: {} };
                 saveData();
@@ -279,7 +284,7 @@
         function generateTodayTasks(todayObj) {
             todayTasksList = { newL: "", revs: [] };
             let todayStr = getFormatDate(todayObj);
-            
+            
             if (appData.skippedDates.includes(todayStr)) return;
 
             todayTasksList.newL = appData.newLessonIndex <= 96 ? titles[appData.newLessonIndex] : "";
@@ -288,7 +293,7 @@
             }
 
             todayTasksList.revs = [...appData.carryoverReviews];
-            
+            
             for (let lesson in appData.learnedData) {
                 let diffDays = calculateEffectiveDiff(appData.learnedData[lesson], todayStr);
                 if (deltas.includes(diffDays)) {
@@ -339,7 +344,7 @@
 
             if (type === 'new') appData.todayState.newLesson = finalStatus;
             else appData.todayState.reviews[name] = finalStatus;
-            
+            
             saveData();
             renderToday(new Date());
             renderTodo(new Date());
@@ -349,7 +354,7 @@
             document.getElementById('display-date').textContent = getDisplayDate(todayObj);
             let contentDiv = document.getElementById('today-content');
             let todayStr = getFormatDate(todayObj);
-            
+            
             if (appData.skippedDates.includes(todayStr)) {
                 contentDiv.innerHTML = `
                     <div class="skipped-msg">
@@ -417,12 +422,12 @@
             tbody.innerHTML = "";
             let todayStr = getFormatDate(todayObj);
 
-            let startDate = new Date(2026, 2, 12); 
+            let startDate = new Date(2026, 2, 12); 
             let simDateObj = new Date(startDate);
-            
+            
             let simIndex = appData.newLessonIndex;
             let simLearned = JSON.parse(JSON.stringify(appData.learnedData));
-            
+            
             let delayNew = false;
             let delayedRevs = [];
             let todayIsSkipped = appData.skippedDates.includes(todayStr);
@@ -438,7 +443,7 @@
 
             let pureTodayTime = new Date(todayObj.getFullYear(), todayObj.getMonth(), todayObj.getDate()).getTime();
             let tomorrowStr = getFormatDate(new Date(todayObj.getTime() + 86400000));
-            
+            
             let emptyDays = 0;
             let safeGuardCount = 0;
 
@@ -448,7 +453,7 @@
 
                 let dStr = getFormatDate(simDateObj);
                 let pureSimTime = new Date(simDateObj.getFullYear(), simDateObj.getMonth(), simDateObj.getDate()).getTime();
-                
+                
                 let sNew = "";
                 let sRevs = [];
                 let revOut = "";
@@ -475,7 +480,7 @@
                         }
                         revOut = sRevs.length > 0 ? sRevs.join("，") : "无";
                     }
-                } 
+                } 
                 // === 今天 ===
                 else if (pureSimTime === pureTodayTime) {
                     rowClass = "tbl-today";
@@ -485,17 +490,17 @@
                     } else {
                         sNew = todayTasksList.newL;
                         sRevs = [...todayTasksList.revs];
-                        
+                        
                         if (!delayNew && sNew && (appData.todayState.newLesson === "done" || appData.todayState.newLesson === "pending")) {
                             simLearned[sNew] = dStr;
                             simIndex++;
                         }
-                        
+                        
                         let sNewHtml = sNew;
                         if (delayNew && sNewHtml) {
                             sNewHtml = `<span style="text-decoration:underline;color:#aaa">${sNewHtml}</span>`;
                         }
-                        
+                        
                         let formattedRevs = [];
                         sRevs.forEach(r => {
                             if (delayedRevs.includes(r)) {
@@ -506,11 +511,11 @@
                                 formattedRevs.push(r);
                             }
                         });
-                        
+                        
                         sNew = sNewHtml;
                         revOut = formattedRevs.length > 0 ? formattedRevs.join("，") : "无";
                     }
-                } 
+                } 
                 // === 未来 ===
                 else {
                     rowClass = "tbl-future";
@@ -534,7 +539,7 @@
                         if (dStr === tomorrowStr && delayedRevs.length > 0) {
                             sRevs = [...new Set([...sRevs, ...delayedRevs])];
                         }
-                        
+                        
                         if (dStr === tomorrowStr && delayNew && sNew) {
                             sNew = `<span style="text-decoration:underline;">${sNew}</span>`;
                         }
@@ -546,7 +551,7 @@
                                 formattedRevs.push(r);
                             }
                         });
-                        
+                        
                         revOut = formattedRevs.length > 0 ? formattedRevs.join("，") : "无";
                     }
                 }
@@ -554,7 +559,7 @@
                 if (pureSimTime > pureTodayTime) {
                     if (!sNew && (!sRevs || sRevs.length === 0) && simIndex > 96) {
                         emptyDays++;
-                        if (emptyDays > 5) break; 
+                        if (emptyDays > 5) break; 
                     } else {
                         emptyDays = 0;
                     }
@@ -580,12 +585,12 @@
             document.getElementById('btn-todo').className = 'tab-btn' + (tab === 'todo' ? ' active' : '');
             document.getElementById('today-view').style.display = tab === 'today' ? 'block' : 'none';
             document.getElementById('todo-view').style.display = tab === 'todo' ? 'block' : 'none';
-            
+            
             if (tab === 'todo') {
                 setTimeout(() => {
                     let anchor = document.getElementById('anchor-today');
                     if(anchor) {
-                        let headerOffset = 60; 
+                        let headerOffset = 60; 
                         let elementPosition = anchor.getBoundingClientRect().top;
                         let offsetPosition = elementPosition + window.pageYOffset - headerOffset;
                         window.scrollTo({ top: offsetPosition, behavior: "smooth" });
@@ -600,7 +605,7 @@
         window.onload = initApp;
 
         // ==========================================
-        // PWA Service Worker 注册代码 (修复位置)
+        // PWA Service Worker 注册代码
         // ==========================================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -613,3 +618,4 @@
     </script>
 </body>
 </html>
+
